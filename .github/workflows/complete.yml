@@ -1,0 +1,21 @@
+name: Build Example
+on:
+  workflow_dispatch: {}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Build (if needed)
+        run: npm run build || echo "No build step"
+      - name: Run Tests
+        run: npm test -- --coverage
+      - name: Zip Package
+        run: zip -r app.zip . -x '*.git*'

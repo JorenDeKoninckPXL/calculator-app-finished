@@ -17,5 +17,12 @@ jobs:
         run: npm run build || echo "No build step"
       - name: Run Tests
         run: npm test -- --coverage
+      - name: Test Report                         
+        uses: dorny/test-reporter@v1                
+        if: always()                                 
+        with:                                        
+          name: Test Results                         
+          path: 'coverage/lcov.info'                 
+          reporter: lcov   
       - name: Zip Package
         run: zip -r app.zip . -x '*.git*'

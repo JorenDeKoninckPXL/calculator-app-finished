@@ -1,10 +1,10 @@
 name: Production Deployment
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   deploy-to-production:
@@ -24,21 +24,14 @@ jobs:
           username: ${{ secrets.PROD_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/calculator-app:latest
-            
-            # Stop and remove existing container if running
             docker stop calculator-app || true
             docker rm calculator-app || true
-            
-            # Run the new container on port 80
             docker run -d \
               --name calculator-app \
               -p 80:3000 \
               --restart unless-stopped \
               ${{ secrets.DOCKERHUB_USERNAME }}/calculator-app:latest
-            
-            # Clean up unused images
             docker image prune -f
 
       - name: Verify Deployment
